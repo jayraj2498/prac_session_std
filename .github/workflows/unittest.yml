@@ -1,0 +1,43 @@
+name: Python CI  # name is indicating what our workflow is called
+
+# trigger the workflow on any push to the main branch or pull request
+# we define some events (e.g., push, pull, merge, delete — based on this event we can trigger workflow)
+# first we write `on:` then define events; in project we can define multiple branches
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+# then jobs: we can have multiple jobs; we run entire job on ubuntu container
+# you can also use windows, mac containers
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # run on ubuntu environment
+
+    # then every workflow step we define it in the block
+    steps:
+      # step 1: check out the code from repository
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      # step 2: set up python environment
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'  # specify the python version you want to use
+
+      # step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # step 4: Run tests
+      - name: Run tests
+        run: pytest
